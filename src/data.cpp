@@ -9,6 +9,7 @@ using namespace arma;
 void gen_data() {
   int n;
   cin>>n;
+  cout<<"N "<<n<<endl;
   mat data(n,2);
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine generator (seed);
