@@ -9,7 +9,6 @@ using namespace arma;
 void gen_data() {
   int n;
   cin>>n;
-  cout<<"N "<<n<<endl;
   mat data(n,2);
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine generator (seed);
@@ -28,21 +27,30 @@ void gen_data() {
 
 
 int main(int argc, char **argv) {
-
   gen_data();
   mat data;
   data.load("data.mio", raw_ascii);
-
   mat X = join_horiz(ones(data.n_rows, 1), data.col(0));
+
+
+  // Show indicators
+  clock_t begin = clock();
   mat W = gradient_descent(X, data.col(1), 10000, 0.01);
-  cout<<W<<endl;
+  clock_t end = clock();
   double err = sum( pow((X * W) - data.col(1), 2) );
+
+  cout<<"Linear regression"<<endl;
+  cout<<"Params : "<<endl;
+  cout<<W<<endl;
+  cout<<"Time elapsed: "<<(end - begin) / (double)CLOCKS_PER_SEC <<endl;
   cout<<"Error = "<<err<<endl;
+
+
+  // To plot
 
   mat Y = (X * W);
   ((mat) X.col(1)).save("x.mio", raw_ascii);
   Y.save("y.mio", raw_ascii);
-
   /*** Maximum likelihood bellow ***
 
   double sigma = (1.0/(double)data.n_rows) * sum( pow((X * W) - data.col(1), 2) );
