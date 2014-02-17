@@ -4,9 +4,7 @@
 
 using namespace std;
 using namespace arma;
-
 #include "linear_regression.cpp"
-
 
 void gen_data() {
   int n;
@@ -15,29 +13,34 @@ void gen_data() {
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine generator (seed);
 
-  std::normal_distribution<double> distribution (0.0, 0.7);
+  std::normal_distribution<double> distribution (0.0, 10);
 
   int m = 5, b = 3;
   for (int i = 0; i < n; ++i) {
     data(i,0) = i*5;
     data(i,1) = m*i*5 + b + distribution(generator);
   }
-  data.save("data.mio");
+  ((mat) data.col(0)).save("xo.mio", raw_ascii);
+  ((mat) data.col(1)).save("yo.mio", raw_ascii);
+  data.save("data.mio", raw_ascii);
 }
-
 
 
 int main(int argc, char **argv) {
 
-  //gen_data();
+  gen_data();
   mat data;
-  data.load("data.mio");
+  data.load("data.mio", raw_ascii);
 
   mat X = join_horiz(ones(data.n_rows, 1), data.col(0));
   mat W = gradient_descent(X, data.col(1), 10000, 0.01);
   cout<<W<<endl;
   double err = sum( pow((X * W) - data.col(1), 2) );
   cout<<"Error = "<<err<<endl;
+
+  mat Y = (X * W);
+  ((mat) X.col(1)).save("x.mio", raw_ascii);
+  Y.save("y.mio", raw_ascii);
 
   /*** Maximum likelihood bellow ***
 
