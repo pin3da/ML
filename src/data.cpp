@@ -13,7 +13,7 @@ void gen_data() {
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine generator (seed);
 
-  std::normal_distribution<double> distribution (0.0, 10);
+  std::normal_distribution<double> distribution (0.0, 15);
 
   int m = 5, b = 3;
   for (int i = 0; i < n; ++i) {
@@ -44,8 +44,16 @@ int main(int argc, char **argv) {
   cout<<W<<endl;
   cout<<"Time elapsed: "<<(end - begin) / (double)CLOCKS_PER_SEC <<endl;
   cout<<"Error = "<<err<<endl;
-
-
+  
+  
+  
+  begin = clock(); 
+  mat W2 = gradient_descentMAP(X, data.col(1), 10000, 0.01);
+  end = clock();
+  cout<<"MAP"<<endl;
+  cout<<"Params : "<<endl;
+  cout<<W2<<endl;
+  cout<<"Time elapsed: "<<(end - begin) / (double)CLOCKS_PER_SEC <<endl;
   // To plot
 
   mat Y = (X * W);
