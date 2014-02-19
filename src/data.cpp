@@ -4,16 +4,17 @@
 
 using namespace std;
 using namespace arma;
+
 #include "linear_regression.cpp"
 
 void gen_data() {
   int n;
   cin>>n;
   mat data(n,2);
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::default_random_engine generator (seed);
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+  default_random_engine generator (seed);
 
-  std::normal_distribution<double> distribution (0.0, 15);
+  normal_distribution<double> distribution (0.0, 15);
 
   int m = 5, b = 3;
   for (int i = 0; i < n; ++i) {
@@ -39,21 +40,24 @@ int main(int argc, char **argv) {
   clock_t end = clock();
   double err = sum( pow((X * W) - data.col(1), 2) );
 
-  cout<<"Linear regression"<<endl;
+  cout<<"Linear regression: Maximum Likelihood."<<endl;
   cout<<"Params : "<<endl;
   cout<<W<<endl;
-  cout<<"Time elapsed: "<<(end - begin) / (double)CLOCKS_PER_SEC <<endl;
   cout<<"Error = "<<err<<endl;
-  
-  
-  
-  begin = clock(); 
-  mat W2 = gradient_descentMAP(X, data.col(1), 10000, 0.01);
+  cout<<"Time elapsed: "<<(end - begin) / (double)CLOCKS_PER_SEC <<endl;
+
+
+  begin = clock();
+  mat W2 = gradient_descentMAP(X, data.col(1), 10000, 0.001, 0.0001);
   end = clock();
-  cout<<"MAP"<<endl;
+  err = sum( pow((X * W) - data.col(1), 2) );
+
+  cout<<"Linear regression: MAP"<<endl;
   cout<<"Params : "<<endl;
   cout<<W2<<endl;
+  cout<<"Error = "<<err<<endl;
   cout<<"Time elapsed: "<<(end - begin) / (double)CLOCKS_PER_SEC <<endl;
+
   // To plot
 
   mat Y = (X * W);
