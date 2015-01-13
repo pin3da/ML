@@ -6,7 +6,7 @@ IFLAGS=-I/usr/include/libxml2/
 all: test
 
 test: test.cc
-	$(CC) $(CFLAGS) $(LDFLAGS) $(IFLAGS) -o test test.cc
+	$(CC) $(CFLAGS) $(LDFLAGS) $(IFLAGS) -o test.out test.cc
 
 clean:
 	rm test
