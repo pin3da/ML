@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
   for (int i = 0; i < iter; ++i, j += delta) {
     noise = dist.Random();
     x(i) = j;
-    y(i) = sin(j) + noise[0];
+    y(i) = sin(j);
   }
 
   x.save("x.mio", raw_ascii);
