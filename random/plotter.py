@@ -3,10 +3,12 @@ import matplotlib.pyplot as plt
 from numpy import *
 
 def m_load(fname) :
-    return fromfile(fname, sep=' ')
+    return fromfile(fname, sep='\n')
 
 X = m_load('x.mio')
-Y = m_load('y.mio')
-plt.plot(X,Y, 'rx')
+for i in xrange(1, 25):
+    Y = m_load('y' + str(i) + '.mio')
+    plt.plot(X,Y, 'rx')
+
 plt.hold()
 plt.show()

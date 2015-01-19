@@ -25,19 +25,20 @@ int main(int argc, char **argv) {
   cout << dist.ToString() << endl;
   vec noise = dist.Random();
 
-  ofstream x("x.mio");
-  ofstream y("y.mio");
-
-  const double delta = acos(0) / atoi(argv[1]);
   int max_value = atoi(argv[2]);
-  for (double i = 0; i < max_value; i += delta) {
+  int iter = atoi(argv[1]);
+  const double delta = max_value / double(iter);
+
+  double j = delta;
+  vec x(iter), y(iter);
+  for (int i = 0; i < iter; ++i, j += delta) {
     noise = dist.Random();
-    x << i << ' ';
-    y << sin(i) + noise[0] << ' ';
+    x(i) = j;
+    y(i) = sin(j) + noise[0];
   }
 
-  x.close();
-  y.close();
+  x.save("x.mio", raw_ascii);
+  y.save("y.mio", raw_ascii);
 
   noise.print();
 
