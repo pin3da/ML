@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   int iter = atoi(argv[1]);
   const double delta = max_value / double(iter);
 
-  double j = delta;
+  double j = 0;
   vec x(iter), y(iter);
   for (int i = 0; i < iter; ++i, j += delta) {
     noise = dist.Random();

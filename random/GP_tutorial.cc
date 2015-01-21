@@ -4,6 +4,8 @@ using namespace mlpack::distribution;
 using namespace std;
 using namespace arma;
 
+
+const double EPS = 1e-10;
 double sigma, lambda;
 
 inline double square(const double x) {
@@ -21,18 +23,18 @@ int main(int argc, char **argv) {
     exit(1);
   }
   arma_rng::set_seed_random();
-  sigma = atof(argv[3]);
+  sigma  = atof(argv[3]);
   lambda = atof(argv[4]);
 
   vec x, y;
   x.load(argv[1], raw_ascii);
   y.load(argv[2], raw_ascii);
 
-  vec mean(x.size() - 1, fill::zeros);
-  mat cov(x.size() - 1, x.size() - 1);
+  vec mean(x.size(), fill::zeros);
+  mat cov(x.size(), x.size());
 
-  for (int i = 0; i < x.size() - 1; i++)
-    for (int j = 0; j < x.size() - 1; j++)
+  for (int i = 0; i < x.size(); i++)
+    for (int j = 0; j < x.size(); j++)
       cov(i, j) = kernel(x(i), x(j));
 
 
@@ -45,21 +47,31 @@ int main(int argc, char **argv) {
   }
 
 
-  mat A(1, x.size() - 1);
+  mat A(1, x.size());
   mat B = cov;
   mat f(y);
   mat C(1, 1);
 
-  for (int i = 0; i < x.size() - 1; ++i)
-    A(0, i) = kernel(x(x.size() - 1), x(i));
 
-  C(0, 0) = kernel(x(x.size() - 1), x(x.size() - 1));
+  ofstream inval("inval.mio");
+  double n_val = 0;
+  for (; n_val < 8.0; n_val += 0.4) {
+    for (int i = 0; i < x.size(); ++i)
+      A(0, i) = kernel(n_val, x(i));
 
-  mat post_mean = A * B.i() * f;
-  mat post_cov  = C - A * B.i() * A.t();
+    C(0, 0) = kernel(n_val, n_val);
 
-  post_mean.print();
+    mat estimate = A * B.i() * f;
+    mat uncertainty  = C - A * B.i() * A.t();
+    inval << n_val << endl;
+    // estimate.print();
+    uncertainty(0, 0) += EPS;
+    GaussianDistribution posterior(estimate, uncertainty);
+    vec data = posterior.Random();
+    cout << setprecision(12) << data(0) << endl;
+  }
 
+  inval.close();
 
   return 0;
 }
