@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++11
-LDFLAGS=-larmadillo -lmlpack
-IFLAGS=-I/usr/include/libxml2/
+LDFLAGS=-larmadillo -lmlpack -lxml2
+IFLAGS= -I/usr/include/libxml2/
 
 all: test tutorial
 

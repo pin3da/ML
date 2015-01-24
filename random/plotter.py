@@ -7,15 +7,15 @@ def m_load(fname) :
 
 x_sin = arange(0, 8, 0.01)
 y_sin = sin(x_sin)
-plt.plot(x_sin, y_sin)
+plt.plot(x_sin, y_sin, 'g')
 
 x  = m_load('x.mio')
 y  = m_load('y.mio')
-plt.plot(x, y, 'xr')
+plt.plot(x, y, 'xb')
 
-inval = m_load('inval.mio')
-p     = m_load('p0.mio')
-plt.plot(inval, p)
+inval = m_load('new_y.mio')
+p     = m_load('outval.mio')
+plt.plot(inval, p, 'xr')
 
 plt.hold()
 plt.show()

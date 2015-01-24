@@ -5,6 +5,7 @@ using namespace std;
 using namespace arma;
 
 int main(int argc, char **argv) {
+  
 
   if (argc < 3) {
     cout << "Usage " << argv[0] << " n_points max_input [noise]" << endl;
@@ -12,6 +13,7 @@ int main(int argc, char **argv) {
   }
 
   arma_rng::set_seed_random();
+  srand (time(NULL));
   vec mean({0});
 
   double tmp = 0.001;
@@ -34,13 +36,23 @@ int main(int argc, char **argv) {
   for (int i = 0; i < iter; ++i, j += delta) {
     noise = dist.Random();
     x(i) = j;
-    y(i) = sin(j) + noise[0];
+    y(i) = sin(j); //+ noise[0];
   }
 
   x.save("x.mio", raw_ascii);
   y.save("y.mio", raw_ascii);
 
-  noise.print();
+  mat new_y(1, iter);
+
+  j = 0.0;
+  for(int i = 0; i < iter; ++i, j += delta){
+    new_y(0, i) = j + ((rand() % 10) + 1)/10.0;
+    //cout << yy << endl;
+  }
+
+  new_y.save("new_y.mio", raw_ascii);
+
+  //noise.print();
 
   cout << dist.Probability(noise) << endl;
 

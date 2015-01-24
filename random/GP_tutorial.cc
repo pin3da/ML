@@ -46,32 +46,32 @@ int main(int argc, char **argv) {
     data.save(name, raw_ascii);
   }
 
+  mat new_y;
 
-  mat A(1, x.size());
+  new_y.load("new_y.mio", raw_ascii);
+
+  mat A(new_y.n_cols , x.size());
   mat B = cov;
   mat f(y);
-  mat C(1, 1);
+  mat C(new_y.n_cols, new_y.n_cols);
 
-
-  ofstream inval("inval.mio");
-  double n_val = 0;
-  for (; n_val < 8.0; n_val += 0.4) {
-    for (int i = 0; i < x.size(); ++i)
-      A(0, i) = kernel(n_val, x(i));
-
-    C(0, 0) = kernel(n_val, n_val);
-
-    mat estimate = A * B.i() * f;
-    mat uncertainty  = C - A * B.i() * A.t();
-    inval << n_val << endl;
-    // estimate.print();
-    uncertainty(0, 0) += EPS;
-    GaussianDistribution posterior(estimate, uncertainty);
-    vec data = posterior.Random();
-    cout << setprecision(12) << data(0) << endl;
+  for(int i = 0; i < new_y.n_cols; i ++){
+    for(int j = 0; j < x.size(); j++){
+      A(i, j) = kernel(new_y(0, i), x(j));
+    }
+  }
+  
+  for(int i = 0; i < new_y.n_cols; i++){
+    for(int j = 0; j < new_y.n_cols; j++)
+      C(i, j) = kernel(new_y(0, i), new_y(0, j));
   }
 
-  inval.close();
+  mat estimate = A * B.i() * f;
+  mat uncertainty  = C - A * B.i() * A.t();
+
+  GaussianDistribution posterior (estimate, uncertainty);
+  vec test = posterior.Mean();
+  test.save("outval.mio", raw_ascii);
 
   return 0;
 }
