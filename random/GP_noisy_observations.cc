@@ -38,8 +38,8 @@ int main(int argc, char **argv) {
     for (int j = 0; j < x.size(); j++)
       cov(i, j) = kernel(x(i), x(j));
 
-
-  GaussianDistribution prior(mean, cov + noise_sigma * eye<mat>(cov.size(),cov.size()));
+  cov = cov + noise_sigma * eye<mat>(cov.n_cols, cov.n_rows);
+  GaussianDistribution prior(mean, cov);
 
   for (int i = 0; i < 3; ++i) {
     vec data = prior.Random();
